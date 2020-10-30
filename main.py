@@ -1,9 +1,7 @@
-from jedi.api.refactoring import inline
-
 from nissl_dataset import Nissl_mask_dataset
 import matplotlib.pyplot as plt
 from network import U_Net
-from unet import UNet
+
 from network import ResAttU_Net
 import numpy as np
 import torch
@@ -18,7 +16,7 @@ import copy
 from tqdm import tqdm
 
 # ------------------------parameters--------------------#
-batch_size = 32
+batch_size = 4
 # ------------------------dataset-----------------------#
 dataset = Nissl_mask_dataset()
 dataset_len = dataset.__len__()
