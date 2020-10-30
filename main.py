@@ -77,12 +77,12 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
 
             optimizer.step()
 
-            loop.set_description(f"Epoch [{epoch}/{num_epochs}],Batch [{batch_idx}/{batch_size}]")
+            loop.set_description(f"Epoch [{epoch}/{num_epochs}],Batch [{batch_idx}/{dataset_len//batch_size}]")
             loop.set_postfix(loss=loss.item())
 
 
 
-        epoch_loss = running_loss / batch_size
+        epoch_loss = running_loss / (dataset_len//batch_size)
 
         print('Loss: {:.4f}'.format(epoch_loss))
 
