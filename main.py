@@ -21,7 +21,7 @@ batch_size = 4
 dataset = Nissl_mask_dataset()
 dataset_len = dataset.__len__()
 print(dataset_len)
-train, val, test = random_split(dataset, [24, 4, 4])
+train, val, test = random_split(dataset, [dataset_len-60, 30, 30])
 train_loader = DataLoader(dataset=train, batch_size=batch_size, shuffle=True, num_workers=2)
 val_loader = DataLoader(dataset=val, batch_size=batch_size, shuffle=True, num_workers=2)
 test_loader = DataLoader(dataset=test, batch_size=batch_size, shuffle=True, num_workers=2)
@@ -31,7 +31,7 @@ model = U_Net(UnetLayer=5, img_ch=3, output_ch=4)
 # -----------------------training-----------------------#
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = model.to(device)
-
+print("Model Created ")
 
 def dice_coeff_loss(Prediction_vector, GT_vector):
     smooth = 1
@@ -41,7 +41,7 @@ def dice_coeff_loss(Prediction_vector, GT_vector):
 
 def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
     since = time.time()
-
+    print("Training Started")
     best_model_wts = copy.deepcopy(model.state_dict())
     best_loss = 1e10
     model.train()
@@ -77,7 +77,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
 
             optimizer.step()
 
-            loop.set_description(f"Epoch [{epoch}/{num_epochs}]")
+            loop.set_description(f"Epoch [{epoch}/{num_epochs}],Batch [{batch_idx}/{batch_size}]")
             loop.set_postfix(loss=loss.item())
 
 
@@ -111,4 +111,4 @@ optimizer_ft = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 # Decay LR by a factor of 0.1 every 7 epochs
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
 
-model_ft = train_model(model, criterion, optimizer_ft, exp_lr_scheduler, num_epochs=5)
+model_ft = train_model(model, criterion, optimizer_ft, exp_lr_scheduler, num_epochs=25)
