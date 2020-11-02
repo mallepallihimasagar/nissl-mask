@@ -55,7 +55,7 @@ def train_model(model, criterion, optimizer, num_epochs=25):
         running_loss = 0.0
         loop = tqdm(enumerate(train_loader),total=len(test_loader),leave=False)
         for batch_idx ,(input_images, target_masks) in loop:
-            inputs = input_images
+            inputs = input_images/255
             labels = target_masks
             inputs = inputs.to(device)
             labels = labels.to(device)
