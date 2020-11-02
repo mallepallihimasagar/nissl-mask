@@ -89,7 +89,8 @@ class Nissl_mask_dataset(Dataset):
             final_mask = self.transform(final_mask)
 
 
-
+        # original : from 0-255 numpy array
+        #final_maskk : from 0-1 numpy array
         sample = (original,final_mask)
         return sample
 
