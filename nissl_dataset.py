@@ -83,11 +83,12 @@ class Nissl_mask_dataset(Dataset):
             final_mask[0] = img
         # original = torch.tensor(original)
         # final_mask = torch.tensor(final_mask)
+        original = np.swapaxes(np.swapaxes(original, 1, -1), 0, 1)
         if self.transform :
             original = self.transform(original)
             final_mask = self.transform(final_mask)
 
-        original = np.swapaxes(np.swapaxes(original,1,-1),0,1)
+
 
         sample = (original,final_mask)
         return sample

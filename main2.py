@@ -81,6 +81,9 @@ def train_model(model, optimizer, scheduler, num_epochs=25):
             epoch_samples = 0
 
             for inputs, labels in dataloaders[phase]:
+                inputs = inputs/255
+                inputs = inputs.type(torch.float)
+                labels = labels.type(torch.float)
                 inputs = inputs.to(device)
                 labels = labels.to(device)
 
