@@ -16,7 +16,7 @@ import copy
 from tqdm import tqdm
 
 # ------------------------parameters--------------------#
-batch_size = 4
+batch_size = 1
 # ------------------------dataset-----------------------#
 dataset = Nissl_mask_dataset()
 dataset_len = dataset.__len__()
