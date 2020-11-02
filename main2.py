@@ -15,7 +15,7 @@ from network import U_Net
 from network import ResAttU_Net
 
 # ------------------------parameters--------------------#
-batch_size = 8
+batch_size = 4
 # ------------------------dataset-----------------------#
 dataset = Nissl_mask_dataset()
 dataset_len = dataset.__len__()
