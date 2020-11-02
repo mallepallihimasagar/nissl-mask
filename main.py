@@ -22,7 +22,7 @@ dataset = Nissl_mask_dataset()
 dataset_len = dataset.__len__()
 print(dataset_len)
 # train, val, test = random_split(dataset, [dataset_len-60, 30, 30])
-train, val, test = random_split(dataset, [1,dataset_len-31, 30])
+train, val, test = random_split(dataset, [2,dataset_len-32, 30])
 train_loader = DataLoader(dataset=train, batch_size=batch_size, shuffle=True, num_workers=2)
 val_loader = DataLoader(dataset=val, batch_size=batch_size, shuffle=True, num_workers=2)
 test_loader = DataLoader(dataset=test, batch_size=batch_size, shuffle=True, num_workers=2)
@@ -64,7 +64,7 @@ def train_model(model, criterion, optimizer, num_epochs=25):
             optimizer.zero_grad()
 
             outputs = model(inputs.type(torch.float))
-            print(f"input shape : {inputs.shape}")
+            print(f"\ninput shape : {inputs.shape}")
             print(f"target shape : {labels.shape}")
             print(f"predicted shape : {outputs.shape}")
             # Flatten the prediction, target, and training field.
@@ -72,10 +72,11 @@ def train_model(model, criterion, optimizer, num_epochs=25):
             GT = labels.type(torch.float)
             SR_flat = SR.view(SR.size(0), -1)
             GT_flat = GT.view(GT.size(0), -1)
-
+            print(f"\n sr_flat shape : {SR_flat.shape}")
+            print(f"\n gt_flat shape : {GT_flat.shape}")
             #loss = criterion(SR_flat, GT_flat)
             loss = dice_coeff_loss(SR_flat, GT_flat)
-
+            print(f"batch loss :{loss}")
             running_loss += loss.item()  #* inputs.size(0)
             loss.backward()
 
