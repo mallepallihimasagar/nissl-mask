@@ -22,15 +22,17 @@ dataset_len = dataset.__len__()
 print(f"training with {dataset_len} images")
 # train, val, test = random_split(dataset, [dataset_len-60, 30, 30])
 # noinspection PyArgumentList
-train, val, test = random_split(dataset, [dataset_len-60,40,20])
+train, val, test = random_split(dataset, [dataset_len - 60, 40, 20])
 train_loader = DataLoader(dataset=train, batch_size=batch_size, shuffle=True, num_workers=4)
-val_loader = DataLoader(dataset=val, batch_size=batch_size//2, shuffle=True, num_workers=4)
-test_loader = DataLoader(dataset=test, batch_size=batch_size//2, shuffle=True, num_workers=4)
+val_loader = DataLoader(dataset=val, batch_size=batch_size // 2, shuffle=True, num_workers=4)
+test_loader = DataLoader(dataset=test, batch_size=batch_size // 2, shuffle=True, num_workers=4)
 
 dataloaders = {
     'train': train_loader,
     'val': val_loader
 }
+
+
 # -----------------------training-----------------------#
 
 def calc_loss(pred, target, metrics, bce_weight=0.5):
@@ -81,7 +83,7 @@ def train_model(model, optimizer, scheduler, num_epochs=25):
             epoch_samples = 0
 
             for inputs, labels in dataloaders[phase]:
-                inputs = torch.true_divide(inputs,255)
+                inputs = torch.true_divide(inputs, 255)
                 inputs = inputs.type(torch.float)
                 labels = labels.type(torch.float)
                 inputs = inputs.to(device)
@@ -123,8 +125,6 @@ def train_model(model, optimizer, scheduler, num_epochs=25):
     return model
 
 
-
-
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
 
@@ -142,7 +142,7 @@ model = U_Net(UnetLayer=5, img_ch=3, output_ch=4).to(device)
 model_path = "models/unet"
 optimizer_ft = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=1e-4)
 
-exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=10, gamma=0.1)
+exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=15, gamma=0.1)
 
-model = train_model(model, optimizer_ft, exp_lr_scheduler, num_epochs=50)
-torch.save(model.state_dict(),model_path)
+model = train_model(model, optimizer_ft, exp_lr_scheduler, num_epochs=60)
+torch.save(model.state_dict(), model_path)
