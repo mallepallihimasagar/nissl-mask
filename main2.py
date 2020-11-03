@@ -139,7 +139,7 @@ model = U_Net(UnetLayer=5, img_ch=3, output_ch=4).to(device)
 # for l in model.base_layers:
 #     for param in l.parameters():
 #         param.requires_grad = False
-model_path = "models/"
+model_path = "models/unet"
 optimizer_ft = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=1e-4)
 
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=10, gamma=0.1)
