@@ -144,5 +144,5 @@ optimizer_ft = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()),
 
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=15, gamma=0.1)
 
-model = train_model(model, optimizer_ft, exp_lr_scheduler, num_epochs=60)
+model = train_model(model, optimizer_ft, exp_lr_scheduler, num_epochs=30)
 torch.save(model.state_dict(), model_path)
