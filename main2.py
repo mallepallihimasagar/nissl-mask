@@ -47,16 +47,31 @@ def calc_loss(pred, target, metrics, bce_weight=0.5):
     dice = dice_loss(pred, target)
 
     loss = bce * bce_weight + dice * (1 - bce_weight)
-    pred_flat = torch.floor_divide(pred.view(-1),255)
+
+    predicted = pred.data
+    predicted = predicted.to('cpu')
+    predicted_img = predicted.numpy()
+
+    labels_data = target.data
+    labels_data = labels_data.to('cpu')
+    labels_data = labels_data.numpy()
+    labels = target.to(device)
+
+    _, predicted = torch.max(pred.data, 1)
+    total = labels.size(0) * labels.size(1) * labels.size(2)* labels.size(3)
+    correct = (predicted_img == labels_data).sum().item()
+    # accuracy += (correct / total)
+    # avg_accuracy = accuracy / (batch)
+    #pred_flat = torch.floor_divide(pred.view(-1),255)
     # target_flat =target.view(-1)
     # f1score = f1_score(pred_flat.data.cpu(),target_flat.data.cpu())
-    pixel_acc = torch.true_divide(torch.sum(pred_flat==target.view(-1)),pred.view(-1).shape[0])
+    #pixel_acc = torch.true_divide(torch.sum(pred_flat==target.view(-1)),pred.view(-1).shape[0])
 
     metrics['bce'] += bce.data.cpu().numpy() * target.size(0)
     metrics['dice'] += dice.data.cpu().numpy() * target.size(0)
     metrics['loss'] += loss.data.cpu().numpy() * target.size(0)
     # metrics['f1_score'] += f1score
-    metrics['pixel_acc'] += pixel_acc.data.cpu()
+    metrics['pixel_acc'] += torch.true_divide(correct/total)
 
     return loss
 
