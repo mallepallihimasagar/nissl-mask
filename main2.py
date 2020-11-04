@@ -71,7 +71,7 @@ def calc_loss(pred, target, metrics, bce_weight=0.5):
     metrics['dice'] += dice.data.cpu().numpy() * target.size(0)
     metrics['loss'] += loss.data.cpu().numpy() * target.size(0)
     # metrics['f1_score'] += f1score
-    metrics['pixel_acc'] += torch.true_divide(correct/total)
+    metrics['pixel_acc'] += (correct/total)
 
     return loss
 
