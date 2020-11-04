@@ -9,10 +9,15 @@ import copy
 from torch.utils.data import DataLoader
 from torch.utils.data.dataset import random_split
 import torch.nn as nn
+from sklearn.metrics import f1_score
+import numpy as np
 
 from nissl_dataset import Nissl_mask_dataset
 from network import U_Net
 from network import ResAttU_Net
+
+torch.manual_seed(0)
+np.random.seed(0)
 
 # ------------------------parameters--------------------#
 batch_size = 4
@@ -42,10 +47,14 @@ def calc_loss(pred, target, metrics, bce_weight=0.5):
     dice = dice_loss(pred, target)
 
     loss = bce * bce_weight + dice * (1 - bce_weight)
+    f1score = f1_score(pred.view(-1),target.view(-1))
+    pixel_acc = torch.true_divide(torch.sum(pred.view(-1)==target.view(-1)),pred.view(-1).shape[0])
 
     metrics['bce'] += bce.data.cpu().numpy() * target.size(0)
     metrics['dice'] += dice.data.cpu().numpy() * target.size(0)
     metrics['loss'] += loss.data.cpu().numpy() * target.size(0)
+    metrics['f1_score'] += f1score.data.cpu()
+    metrics['pixel_acc'] += pixel_acc.data.cpu()
 
     return loss
 
@@ -128,10 +137,10 @@ def train_model(model, optimizer, scheduler, num_epochs=25):
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
 
-num_class = 6
+# num_class = 6
 # -----------------------model--------------------------#
 model = U_Net(UnetLayer=5, img_ch=3, output_ch=4).to(device)
-# model2  = ResAttU_Net(UnetLayer=5,output_ch=4).to(device)
+# model2  = ResAttU_Net(UnetLayer=5,img_ch=3,output_ch=4).to(device)
 
 
 # freeze backbone layers

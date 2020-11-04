@@ -9,6 +9,8 @@ import numpy as np
 from skimage import io
 import cv2
 from torch.utils.data import Dataset,DataLoader
+torch.manual_seed(0)
+np.random.seed(0)
 
 class Nissl_mask_dataset(Dataset):
     def __init__(self,root_dir='nissl_unet_data',transform=None,multiclass=True):
