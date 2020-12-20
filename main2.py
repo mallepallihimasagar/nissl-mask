@@ -34,7 +34,8 @@ test_loader = DataLoader(dataset=test, batch_size=batch_size // 2, shuffle=True,
 
 dataloaders = {
     'train': train_loader,
-    'val': val_loader
+    'val': val_loader,
+    'test' : test_loader
 }
 
 
@@ -48,30 +49,21 @@ def calc_loss(pred, target, metrics, bce_weight=0.5):
 
     loss = bce * bce_weight + dice * (1 - bce_weight)
 
-    predicted = pred.data
-    predicted = predicted.to('cpu')
-    predicted_img = predicted.numpy()
 
-    labels_data = target.data
-    labels_data = labels_data.to('cpu')
-    labels_data = labels_data.numpy()
-    labels = target.to(device)
-
-    _, predicted = torch.max(pred.data, 1)
-    total = labels.size(0) * labels.size(1) * labels.size(2)* labels.size(3)
-    correct = (predicted_img == labels_data).sum().item()
-    # accuracy += (correct / total)
-    # avg_accuracy = accuracy / (batch)
-    #pred_flat = torch.floor_divide(pred.view(-1),255)
-    # target_flat =target.view(-1)
+    pred_flat = pred.view(-1).data.cpu().numpy()
+    target_flat =target.view(-1).data.cpu().numpy()
+    pred_flat = pred_flat//255
+    acc = np.sum(pred_flat==target_flat)/pred_flat.shape[0]
     # f1score = f1_score(pred_flat.data.cpu(),target_flat.data.cpu())
     #pixel_acc = torch.true_divide(torch.sum(pred_flat==target.view(-1)),pred.view(-1).shape[0])
+
+
 
     metrics['bce'] += bce.data.cpu().numpy() * target.size(0)
     metrics['dice'] += dice.data.cpu().numpy() * target.size(0)
     metrics['loss'] += loss.data.cpu().numpy() * target.size(0)
     # metrics['f1_score'] += f1score
-    metrics['pixel_acc'] += (correct/total)
+    metrics['pixel_acc'] += acc
 
     return loss
 
@@ -147,6 +139,24 @@ def train_model(model, optimizer, scheduler, num_epochs=25):
     print('Best val loss: {:4f}'.format(best_loss))
 
     # load best model weights
+    model.load_state_dict(best_model_wts)
+    #testing model
+    phase = 'test'
+    metrics = defaultdict(float)
+    epoch_samples = 0
+    model.eval()
+    for inputs, labels in dataloaders[phase]:
+        inputs = torch.true_divide(inputs, 255)
+        inputs = inputs.type(torch.float)
+        labels = labels.type(torch.float)
+        inputs = inputs.to(device)
+        labels = labels.to(device)
+
+        loss = calc_loss(outputs, labels, metrics)
+        print("test results")
+        epoch_samples += inputs.size(0)
+        print_metrics(metrics, epoch_samples, phase)
+
     model.load_state_dict(best_model_wts)
     return model
 
