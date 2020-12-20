@@ -55,6 +55,8 @@ def calc_loss(pred, target, metrics, bce_weight=0.5):
 
     pred_flat = pred.view(-1).data.cpu().numpy()
     target_flat =target.view(-1).data.cpu().numpy()
+    for i in pred_flat:
+        print(i)
     pred_flat[pred_flat>=0.5]=1
     pred_flat[pred_flat < 0.5] = 0
     print(pred_flat)
