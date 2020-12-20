@@ -44,9 +44,11 @@ dataloaders = {
 def calc_loss(pred, target, metrics, bce_weight=0.5):
     bce = F.binary_cross_entropy_with_logits(pred, target)
     print(pred[0])
-    exit(0)
-    pred = torch.sigmoid(pred)
 
+    pred = torch.sigmoid(pred)
+    print("pred after sigmoid")
+    print(pred[0])
+    exit(0)
 
 
     dice = dice_loss(pred, target)
