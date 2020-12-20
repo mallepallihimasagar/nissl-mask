@@ -46,8 +46,7 @@ def calc_loss(pred, target, metrics, bce_weight=0.5):
 
     pred = torch.sigmoid(pred)
     print("printing predection--------------")
-    print(pred)
-    exit(0)
+
 
     dice = dice_loss(pred, target)
 
@@ -56,6 +55,8 @@ def calc_loss(pred, target, metrics, bce_weight=0.5):
 
     pred_flat = pred.view(-1).data.cpu().numpy()
     target_flat =target.view(-1).data.cpu().numpy()
+    print(pred_flat)
+    exit(0)
     pred_flat = pred_flat//255
     acc = np.sum(pred_flat==target_flat)/pred_flat.shape[0]
     # f1score = f1_score(pred_flat.data.cpu(),target_flat.data.cpu())
