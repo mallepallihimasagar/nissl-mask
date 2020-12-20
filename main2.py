@@ -69,8 +69,8 @@ def calc_loss(pred, target, metrics, bce_weight=0.5):
     metrics['bce'] += bce.data.cpu().numpy() * target.size(0)
     metrics['dice'] += dice.data.cpu().numpy() * target.size(0)
     metrics['loss'] += loss.data.cpu().numpy() * target.size(0)
-    metrics['pixel_acc'] += acc
-    metrics['f1_score'] += f1score
+    metrics['pixel_acc'] = acc
+    metrics['f1_score'] = f1score
 
     return loss
 
