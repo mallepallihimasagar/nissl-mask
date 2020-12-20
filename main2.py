@@ -45,6 +45,10 @@ def calc_loss(pred, target, metrics, bce_weight=0.5):
     bce = F.binary_cross_entropy_with_logits(pred, target)
 
     pred = torch.sigmoid(pred)
+    print("printing predection--------------")
+    print(pred)
+    exit(0)
+
     dice = dice_loss(pred, target)
 
     loss = bce * bce_weight + dice * (1 - bce_weight)
