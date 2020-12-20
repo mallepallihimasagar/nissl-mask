@@ -55,18 +55,13 @@ def calc_loss(pred, target, metrics, bce_weight=0.5):
 
     pred_flat = pred.view(-1).data.cpu().numpy()
     target_flat =target.view(-1).data.cpu().numpy()
-    for i in pred_flat:
-        print(i)
+
     pred_flat[pred_flat>=0.5]=1
     pred_flat[pred_flat < 0.5] = 0
-    print(pred_flat)
-    print("*"*10)
-    print(target_flat)
 
-    exit(0)
-    pred_flat = pred_flat//255
+    #pred_flat = pred_flat//255
     acc = np.sum(pred_flat==target_flat)/pred_flat.shape[0]
-    # f1score = f1_score(pred_flat.data.cpu(),target_flat.data.cpu())
+    f1score = f1_score(pred_flat.data.cpu(),target_flat.data.cpu())
     #pixel_acc = torch.true_divide(torch.sum(pred_flat==target.view(-1)),pred.view(-1).shape[0])
 
 
@@ -74,8 +69,8 @@ def calc_loss(pred, target, metrics, bce_weight=0.5):
     metrics['bce'] += bce.data.cpu().numpy() * target.size(0)
     metrics['dice'] += dice.data.cpu().numpy() * target.size(0)
     metrics['loss'] += loss.data.cpu().numpy() * target.size(0)
-    # metrics['f1_score'] += f1score
     metrics['pixel_acc'] += acc
+    metrics['f1_score'] += f1score
 
     return loss
 
