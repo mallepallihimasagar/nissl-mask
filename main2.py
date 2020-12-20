@@ -43,12 +43,10 @@ dataloaders = {
 
 def calc_loss(pred, target, metrics, bce_weight=0.5):
     bce = F.binary_cross_entropy_with_logits(pred, target)
-    print(pred[0])
+
 
     pred = torch.sigmoid(pred)
-    print("pred after sigmoid")
-    print(pred[0])
-    exit(0)
+
 
 
     dice = dice_loss(pred, target)
@@ -72,8 +70,8 @@ def calc_loss(pred, target, metrics, bce_weight=0.5):
     metrics['bce'] += bce.data.cpu().numpy() * target.size(0)
     metrics['dice'] += dice.data.cpu().numpy() * target.size(0)
     metrics['loss'] += loss.data.cpu().numpy() * target.size(0)
-    metrics['pixel_acc'] = acc
-    metrics['f1_score'] = f1score
+    #metrics['pixel_acc'] = acc
+    #metrics['f1_score'] = f1score
 
     return loss
 
@@ -86,7 +84,7 @@ def print_metrics(metrics, epoch_samples, phase):
     print("{}: {}".format(phase, ", ".join(outputs)))
 
 
-def train_model(model, optimizer, scheduler, num_epochs=25):
+def train_model(model, optimizer, scheduler, num_epochs=20):
     best_model_wts = copy.deepcopy(model.state_dict())
     best_loss = 1e10
 
@@ -149,24 +147,6 @@ def train_model(model, optimizer, scheduler, num_epochs=25):
     print('Best val loss: {:4f}'.format(best_loss))
 
     # load best model weights
-    model.load_state_dict(best_model_wts)
-    #testing model
-    phase = 'test'
-    metrics = defaultdict(float)
-    epoch_samples = 0
-    model.eval()
-    for inputs, labels in dataloaders[phase]:
-        inputs = torch.true_divide(inputs, 255)
-        inputs = inputs.type(torch.float)
-        labels = labels.type(torch.float)
-        inputs = inputs.to(device)
-        labels = labels.to(device)
-
-        loss = calc_loss(outputs, labels, metrics)
-        print("test results")
-        epoch_samples += inputs.size(0)
-        print_metrics(metrics, epoch_samples, phase)
-
     model.load_state_dict(best_model_wts)
     return model
 
