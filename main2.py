@@ -87,7 +87,7 @@ def print_metrics(metrics, epoch_samples, phase):
 def train_model(model, optimizer, scheduler, num_epochs=20):
     best_model_wts = copy.deepcopy(model.state_dict())
     best_loss = 1e10
-
+    patience = 0
     for epoch in range(num_epochs):
         print('Epoch {}/{}'.format(epoch, num_epochs - 1))
         print('-' * 10)
@@ -140,9 +140,16 @@ def train_model(model, optimizer, scheduler, num_epochs=20):
                 print("saving best model")
                 best_loss = epoch_loss
                 best_model_wts = copy.deepcopy(model.state_dict())
+                patience = 0
+            else :
+              patience +=1
+
 
         time_elapsed = time.time() - since
         print('{:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
+        if patience >= 10:
+          print("out of patience breaking the training loop :(")
+          break
 
     print('Best val loss: {:4f}'.format(best_loss))
 
@@ -168,7 +175,7 @@ model = U_Net(UnetLayer=5, img_ch=3, output_ch=4).to(device)
 model_path = "/content/nissl-mask/models/unet"
 optimizer_ft = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=1e-4)
 
-exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=15, gamma=0.1)
+exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=10, gamma=0.1)
 
-model = train_model(model, optimizer_ft, exp_lr_scheduler, num_epochs=30)
+model = train_model(model, optimizer_ft, exp_lr_scheduler, num_epochs=50)
 torch.save(model.state_dict(), model_path)
