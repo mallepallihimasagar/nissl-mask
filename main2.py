@@ -175,7 +175,7 @@ model = U_Net(UnetLayer=5, img_ch=3, output_ch=4).to(device)
 model_path = "/content/nissl-mask/models/unet"
 optimizer_ft = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=1e-4)
 
-exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=10, gamma=0.1)
+exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=20, gamma=0.1)
 
-model = train_model(model, optimizer_ft, exp_lr_scheduler, num_epochs=50)
+model = train_model(model, optimizer_ft, exp_lr_scheduler, num_epochs=100)
 torch.save(model.state_dict(), model_path)
