@@ -141,13 +141,13 @@ def train_model(model, optimizer, scheduler, num_epochs=20):
                 best_loss = epoch_loss
                 best_model_wts = copy.deepcopy(model.state_dict())
                 patience = 0
-            else :
+            elif phase=='val' :
               patience +=1
 
 
         time_elapsed = time.time() - since
         print('{:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
-        if patience >= 10:
+        if patience >= 15:
           print("out of patience breaking the training loop :(")
           break
 
